@@ -69,6 +69,20 @@ app.get("/api/v1/content", userMiddleware , async (req, res) => {
   res.json(content)
 })
 
+app.delete("/api/v1/content", userMiddleware , async (req, res) => {
+    const userId = (req as any).user
+    const contentId = req.body.contentId
+    if (!contentId) return res.status(400).json({ message: "Content ID is required" })
+
+    try {
+        await ContentModel.deleteMany({ _id: contentId, userId })
+        res.json({ message: "Content deleted successfully" })
+    }    
+    catch (err) {
+        console.error("Delete content error:", err)
+        res.status(500).json({ message: "Failed to delete content" })
+    }
+})
 
 
 
