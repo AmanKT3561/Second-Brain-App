@@ -1,5 +1,5 @@
 import type { iconprops } from "./index";
-import { IconSizeVariants } from ".";
+import { IconSizeVariants } from "./index";
 
 export const PlusIcon = (props : iconprops) => {
   return (

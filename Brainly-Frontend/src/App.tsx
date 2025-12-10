@@ -5,7 +5,7 @@ import { PlusIcon } from './componenents/ui/icons/PlusIcon'
 function App() {
   return (
     <>
-      <Button startIcon = {<PlusIcon/>} size = "md" variant="Primary" text="Hello" />
+      <Button startIcon = {<PlusIcon size="sm" />} size = "lg" variant="Primary" text="Hello" />
       <Button size = "lg" variant="Secondary" text="World" />
     </>
   )
