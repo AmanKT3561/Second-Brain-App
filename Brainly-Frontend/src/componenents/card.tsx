@@ -7,6 +7,15 @@ interface CardProps {
 }
 export const Card = ({ tittle, link, type }: CardProps) => {
   const tweetRef = useRef<HTMLElement | null>(null);
+  const sanitizeTweetUrl = (url: string) => {
+    // normalize x.com -> twitter.com and strip query params
+    try {
+      const normalized = url.replace("x.com", "twitter.com");
+      return normalized.split("?")[0];
+    } catch (e) {
+      return url;
+    }
+  };
   useEffect(() => {
     if (type === "twitter") {
       const twttr = (window as any).twttr;
@@ -54,18 +63,18 @@ export const Card = ({ tittle, link, type }: CardProps) => {
           {type === "youtube" && (
             <iframe
               className="w-full "
-              src = {link.replace( "watch" , "embed" )}
+              src={link.replace("watch", "embed")}
               title="YouTube video player"
-              frameborder="0"
+              frameBorder={0}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerpolicy="strict-origin-when-cross-origin"
-              allowfullscreen
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
             ></iframe>
           )}
 
           {type === "twitter" && (
             <blockquote className="twitter-tweet" ref={tweetRef as any}>
-              <a href={link.replace("x.com", "twitter.com")}></a>
+              <a href={sanitizeTweetUrl(link)}>{sanitizeTweetUrl(link)}</a>
             </blockquote>
           )}
 

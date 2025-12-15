@@ -8,7 +8,10 @@ export interface buttonProps {
     text : string,
     startIcon?: ReactElement,
     endIcon?: ReactElement,
-    onClick?: MouseEventHandler<HTMLButtonElement>
+    onClick?: MouseEventHandler<HTMLButtonElement>,
+    Fullwidth?: boolean,
+    Loading?: boolean
+
 }
 
 const Variantstyles = {
@@ -24,7 +27,7 @@ const sizeStyles = {
 const defaultStyles = "rounded-md flex font-light flex"
 export const Button = (props: buttonProps) => {
   return (
-    <button onClick = {props.onClick} className={`${Variantstyles[props.variant]} ${sizeStyles[props.size]} ${defaultStyles}`}>
+    <button onClick = {props.onClick} className={`${Variantstyles[props.variant]} ${sizeStyles[props.size]} ${defaultStyles} + ${props.Fullwidth ? " w-full flex justify-center items-center" : ""} ${props.Loading ? "opacity-45" : ""} `} disabled = {props.Loading}>
       {props.startIcon ? <div className="pr-2 , items-center"> {props.startIcon} </div> :null } {props.text} {props.endIcon ? <div className="pr-2 , items-center"> {props.endIcon} </div> :null }
     </button>
   );
