@@ -4,11 +4,11 @@ export function TwitterIcon() {
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="#000000"
-        className="bi bi-twitter-x"
+        className="bi bi-twitter-x size-5"
         viewBox="0 0 16 16"
         id="Twitter-X--Streamline-Bootstrap"
-        height="16"
-        width="16"
+        height="20"
+        width="20"
       >
         <desc>Twitter X Streamline Icon: https://streamlinehq.com</desc>
         <path
