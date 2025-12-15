@@ -1,5 +1,6 @@
 import type { ReactElement } from "react";
-import type React from "react";
+import type React from "react"; 
+import { MouseEventHandler } from "react";
 
 export interface buttonProps {
     variant: "Primary" | "Secondary" ,
@@ -7,7 +8,7 @@ export interface buttonProps {
     text : string,
     startIcon?: ReactElement,
     endIcon?: ReactElement,
-    onClick?: () => void,
+    onClick?: MouseEventHandler<HTMLButtonElement>
 }
 
 const Variantstyles = {
@@ -16,14 +17,14 @@ const Variantstyles = {
 }
 const sizeStyles = {
   "sm": "py-1 px-2",
-  "md": "py-2 px-4",
+  "md": "py-2 px-3",
   "lg": "py-4 px-6",
 };
 
-const defaultStyles = "rounded-md flex"
+const defaultStyles = "rounded-md flex font-light flex"
 export const Button = (props: buttonProps) => {
   return (
-    <button className={`${Variantstyles[props.variant]} ${sizeStyles[props.size]} ${defaultStyles}`}>
+    <button onClick = {props.onClick} className={`${Variantstyles[props.variant]} ${sizeStyles[props.size]} ${defaultStyles}`}>
       {props.startIcon ? <div className="pr-2 , items-center"> {props.startIcon} </div> :null } {props.text} {props.endIcon ? <div className="pr-2 , items-center"> {props.endIcon} </div> :null }
     </button>
   );
