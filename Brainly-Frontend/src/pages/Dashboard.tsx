@@ -1,7 +1,7 @@
 import '../index.css'
 import {Button} from "../componenents/Buttons"
 import { PlusIcon } from '../componenents/ui/icons/PlusIcon'
-import { ShareIcon } from '../componenents/ui/icons/shareicon'
+import { ShareIcon } from '../componenents/ui/icons/Shareicon'
 import { Card } from '../componenents/card'
 import { CreateContentModal } from '../componenents/ui/CreateContentModal'
 import { useState } from 'react'

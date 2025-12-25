@@ -4,7 +4,7 @@ import { MouseEventHandler } from "react";
 
 export interface buttonProps {
     variant: "Primary" | "Secondary" ,
-    size: "sm" | "md" | "lg",
+    size?: "sm" | "md" | "lg",
     text : string,
     startIcon?: ReactElement,
     endIcon?: ReactElement,

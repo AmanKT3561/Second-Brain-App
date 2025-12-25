@@ -1,4 +1,4 @@
-import { ShareIcon } from "./ui/icons/shareicon";
+import { ShareIcon } from "./ui/icons/Shareicon";
 import React, { useEffect, useRef } from "react";
 interface CardProps {
   tittle: string;
@@ -48,7 +48,7 @@ export const Card = ({ tittle, link, type }: CardProps) => {
 
           <div className="flex items-center">
             <div className="text-gray-500 pr-2">
-              <a href={link} target="_blank" rel="noreferrer">
+              <a href={link} target="_blank" rel="noreferrer" title="Open link in new tab">
                 <ShareIcon size="md" />
               </a>
             </div>
