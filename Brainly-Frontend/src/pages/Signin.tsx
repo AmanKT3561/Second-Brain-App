@@ -10,14 +10,23 @@ export function Signin() {
   async function signin() {
     const Username = usernameRef.current?.value;
     const Password = passwordRef.current?.value;
-     const response =  await axios.post(`http://localhost:3000/api/v1/signin`, {
+    try {
+      setLoading(true);
+      const response = await axios.post(`http://localhost:3000/api/v1/signin`, {
         username: Username,
-        password: Password
+        password: Password,
       });
       const token = response.data.token;
       localStorage.setItem("token", token);
       alert("Signin Successful");
       navigate("/dashboard");
+    } catch (err: any) {
+      console.error('Signin error', err);
+      const msg = err?.response?.data?.message || 'Signin failed';
+      alert(msg);
+    } finally {
+      setLoading(false);
+    }
     } 
  
   return (
@@ -26,7 +35,7 @@ export function Signin() {
         <Input Reference={usernameRef} placeholder="Username" />
         <Input Reference={passwordRef} placeholder="Password" />
         <div className="justify-center flex pt-4">
-        <Button onClick = {signin} Loading = {false} text="Sign In" variant="Primary" size="md" Fullwidth={true} />
+        <Button onClick={signin} Loading={loading} text="Sign In" variant="Primary" size="md" Fullwidth={true} />
         </div>
       </div>
     </div>

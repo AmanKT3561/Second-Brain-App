@@ -5,22 +5,23 @@ import type { Request, Response, NextFunction } from "express";
 const secret = process.env.JWT_SECRET as string;
 
 export const userMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-    const header = req.headers.authorization;
-    if (!header) {
-        return res.status(401).json({
-            message: "No token provided"
-        });
+    const authHeader = req.headers.authorization as string | undefined;
+    if (!authHeader) {
+        return res.status(401).json({ message: "No token provided" });
     }
-    const decoded = jwt.verify(header, secret) as { username: string };
-    if(!decoded){
-        return res.status(401).json({
-            message: "youre not authorized"
-        })
-    }
-    else{
-        //@ts-ignore
+    const token = authHeader.startsWith("Bearer ")
+        ? authHeader.slice(7)
+        : authHeader;
+    try {
+        const decoded = jwt.verify(token, secret) as { id?: string } | null;
+        if (!decoded || !decoded.id) {
+            return res.status(401).json({ message: "You're not authorized" });
+        }
+        // @ts-ignore - attach user id to request
         req.user = decoded.id;
         next();
+    } catch (err) {
+        return res.status(401).json({ message: "Invalid token" });
     }
 
 }

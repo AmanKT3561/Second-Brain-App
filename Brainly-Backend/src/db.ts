@@ -27,10 +27,11 @@ export const UserModel = mongoose.model("User" , userSchema);
 
 
 const contentSchema = new Schema({
-    title: { type: String, required: true },
-    link : String,
-    tags :[{type: mongoose.Types.ObjectId , ref: "Tag"}],
-    userId:{type: mongoose.Types.ObjectId , ref: "User" , required: true}
+  title: { type: String, required: true },
+  link : String,
+  type: { type: String, enum: ["twitter", "youtube"] },
+  tags :[{type: mongoose.Types.ObjectId , ref: "Tag"}],
+  userId:{type: mongoose.Types.ObjectId , ref: "User" , required: true}
 });
 
 
