@@ -58,7 +58,7 @@ export function Dashboard() {
           }
           try {
             const response = await axios.post(
-              `http://localhost:3000/api/v1/brain/share`,
+              `https://second-brain-app-qoob.onrender.com/api/v1/brain/share`,
               { share: true },
               { headers: { Authorization: token } }
             );

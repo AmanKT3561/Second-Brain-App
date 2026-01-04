@@ -36,7 +36,7 @@ export function CreateContentModal({
         return;
       }
       await axios.post(
-        `http://localhost:3000/api/v1/content`,
+        `https://second-brain-app-qoob.onrender.com/api/v1/content`,
         {
           title: tittle,
           link: link,

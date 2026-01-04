@@ -22,7 +22,7 @@ export function ShareModal({ open, onClose, initialUrl } : { open: boolean, onCl
       } catch {}
 
       const token = localStorage.getItem('token')
-      const res = await axios.get(`http://localhost:3000/api/v1/brain/shareLink/${hash}`, { headers: token ? { Authorization: token } : undefined })
+      const res = await axios.get(`https://second-brain-app-qoob.onrender.com/api/v1/brain/shareLink/${hash}`, { headers: token ? { Authorization: token } : undefined })
       setUsername(res.data.username)
       setContents(res.data.content || [])
     }catch(err: any){

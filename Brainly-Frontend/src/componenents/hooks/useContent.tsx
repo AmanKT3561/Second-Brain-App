@@ -14,7 +14,7 @@ export function useContent() {
                 return;
             }
             try {
-                const res = await axios.get(`http://localhost:3000/api/v1/content`, {
+                const res = await axios.get(`https://second-brain-app-qoob.onrender.com/api/v1/content`, {
                     headers: { Authorization: token },
                 });
                 if (mounted) setContent(res.data);

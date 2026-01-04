@@ -1,2 +1,2 @@
 
-export const backendURL = "http://localhost:3000/api/v1/";
+export const backendURL = "https://second-brain-app-qoob.onrender.com/api/v1/";

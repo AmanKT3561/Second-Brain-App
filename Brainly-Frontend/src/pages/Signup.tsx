@@ -12,7 +12,7 @@ export function Signup() {
     const Username = usernameRef.current?.value;
     const Password = passwordRef.current?.value;
     try {
-      await axios.post(`http://localhost:3000/api/v1/signup`, {
+      await axios.post(`https://second-brain-app-qoob.onrender.com/api/v1/signup`, {
         username: Username,
         password: Password
       });

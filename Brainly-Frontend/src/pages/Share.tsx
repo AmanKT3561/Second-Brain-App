@@ -19,7 +19,7 @@ export function SharePage() {
       try {
         // include token if present, otherwise call without it
         const token = localStorage.getItem('token')
-        const res = await axios.get(`http://localhost:3000/api/v1/brain/shareLink/${shareLink}`, {
+        const res = await axios.get(`https://second-brain-app-qoob.onrender.com/api/v1/brain/shareLink/${shareLink}`, {
           headers: token ? { Authorization: token } : undefined,
         })
         setUsername(res.data.username)

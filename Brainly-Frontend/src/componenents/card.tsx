@@ -76,7 +76,7 @@ export const Card = ({ id, tittle, link, type }: CardProps) => {
                 if (!token) { alert('You must be signed in to delete content'); return }
                 try {
                   setDeleting(true);
-                  await axios.delete('http://localhost:3000/api/v1/content', { data: { contentId: id }, headers: { Authorization: token } })
+                  await axios.delete('https://second-brain-app-qoob.onrender.com/api/v1/content', { data: { contentId: id }, headers: { Authorization: token } })
                   // notify to re-fetch
                   window.dispatchEvent(new Event('content:deleted'))
                 } catch (err) {
