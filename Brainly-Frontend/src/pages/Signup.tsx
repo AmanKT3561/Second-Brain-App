@@ -1,7 +1,6 @@
 import { useRef } from "react";
 import { Button } from "../componenents/Buttons";
 import { Input } from "../componenents/ui/Input";
-import { backendURL } from "../backendURL";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 export function Signup() {
