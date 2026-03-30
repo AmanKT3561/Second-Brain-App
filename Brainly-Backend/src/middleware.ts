@@ -1,9 +1,6 @@
 import jwt from "jsonwebtoken";
 import type { Request, Response, NextFunction } from "express";
 
-
-const secret = process.env.JWT_SECRET as string;
-
 export const userMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization as string | undefined;
     if (!authHeader) {
@@ -12,6 +9,9 @@ export const userMiddleware = async (req: Request, res: Response, next: NextFunc
     const token = authHeader.startsWith("Bearer ")
         ? authHeader.slice(7)
         : authHeader;
+
+    const secret = process.env.JWT_SECRET as string;
+
     try {
         const decoded = jwt.verify(token, secret) as { id?: string } | null;
         if (!decoded || !decoded.id) {
@@ -23,8 +23,4 @@ export const userMiddleware = async (req: Request, res: Response, next: NextFunc
     } catch (err) {
         return res.status(401).json({ message: "Invalid token" });
     }
-
-}
-
-
-    
+};

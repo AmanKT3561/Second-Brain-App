@@ -12,7 +12,6 @@ export const Card = ({ id, tittle, link, type }: CardProps) => {
   const tweetRef = useRef<HTMLElement | null>(null);
   const [deleting, setDeleting] = useState(false);
   const sanitizeTweetUrl = (url: string) => {
-    // normalize x.com -> twitter.com and strip query params
     try {
       const normalized = url.replace("x.com", "twitter.com");
       return normalized.split("?")[0];
@@ -24,10 +23,8 @@ export const Card = ({ id, tittle, link, type }: CardProps) => {
     if (type === "twitter") {
       const twttr = (window as any).twttr;
       if (twttr?.widgets?.load) {
-        // re-scan the newly added blockquote for Twitter widgets
         twttr.widgets.load(tweetRef.current ?? document);
       } else {
-        // Dynamically add the widgets script if it isn't present yet
         const script = document.createElement("script");
         script.src = "https://platform.twitter.com/widgets.js";
         script.async = true;
@@ -49,7 +46,6 @@ export const Card = ({ id, tittle, link, type }: CardProps) => {
 
           <div className="flex items-center gap-3">
             <button onClick={async () => {
-              // share this card's link
               try {
                 if (navigator.share) {
                   await navigator.share({ title: tittle, url: link })
@@ -62,7 +58,6 @@ export const Card = ({ id, tittle, link, type }: CardProps) => {
                 await navigator.clipboard.writeText(link)
                 alert('Link copied to clipboard')
               } catch (err) {
-                // final fallback: open the link in new tab
                 window.open(link, '_blank')
               }
             }} title="Share" className="text-gray-500">
@@ -76,8 +71,10 @@ export const Card = ({ id, tittle, link, type }: CardProps) => {
                 if (!token) { alert('You must be signed in to delete content'); return }
                 try {
                   setDeleting(true);
-                  await axios.delete('https://second-brain-app-qoob.onrender.com/api/v1/content', { data: { contentId: id }, headers: { Authorization: token } })
-                  // notify to re-fetch
+                  await axios.delete('https://second-brain-app-qoob.onrender.com/api/v1/content', {
+                    data: { contentId: id },
+                    headers: { Authorization: `Bearer ${token}` },
+                  })
                   window.dispatchEvent(new Event('content:deleted'))
                 } catch (err) {
                   console.error('Delete failed', err)
@@ -92,7 +89,6 @@ export const Card = ({ id, tittle, link, type }: CardProps) => {
         </div>
 
         <div className="pt-3">
-
           {type === "youtube" && (
             <iframe
               className="w-full "
@@ -110,7 +106,6 @@ export const Card = ({ id, tittle, link, type }: CardProps) => {
               <a href={sanitizeTweetUrl(link)}>{sanitizeTweetUrl(link)}</a>
             </blockquote>
           )}
-
         </div>
       </div>
     </div>

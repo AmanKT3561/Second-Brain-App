@@ -1,6 +1,5 @@
 import mongoose, { Schema } from "mongoose";
 import dotenv from "dotenv";
-import { title } from "process";
 
 dotenv.config();
 
@@ -23,27 +22,21 @@ const userSchema = new Schema({
   password: { type: String, required: true, minlength: 6 },
 });
 
-export const UserModel = mongoose.model("User" , userSchema);
-
+export const UserModel = mongoose.model("User", userSchema);
 
 const contentSchema = new Schema({
   title: { type: String, required: true },
-  link : String,
+  link: String,
   type: { type: String, enum: ["twitter", "youtube"] },
-  tags :[{type: mongoose.Types.ObjectId , ref: "Tag"}],
-  userId:{type: mongoose.Types.ObjectId , ref: "User" , required: true}
+  tags: [{ type: mongoose.Types.ObjectId, ref: "Tag" }],
+  userId: { type: mongoose.Types.ObjectId, ref: "User", required: true },
 });
 
-
-export const ContentModel = mongoose.model("Content" , contentSchema);
+export const ContentModel = mongoose.model("Content", contentSchema);
 
 const LinkSchema = new Schema({
+  hash: { type: String, required: true },
+  userId: { type: mongoose.Types.ObjectId, ref: "User", required: true, unique: true },
+});
 
-  hash: String,
-  userId: { type : mongoose.Types.ObjectId , ref: "User" , required: true ,
-  unique: true }
-
-
-})
-
-export const LinkModel = mongoose.model("Link" , LinkSchema);
+export const LinkModel = mongoose.model("Link", LinkSchema);

@@ -9,6 +9,7 @@ import { useState, useEffect } from 'react'
 import { Sidebar } from '../componenents/Sidebar'
 import { useContent } from '../componenents/hooks/useContent'
 import axios from 'axios'
+
 export function Dashboard() {
   const [modalOpen , setmodalOpen] = useState(false)
   const [shareModalOpen, setShareModalOpen] = useState(false)
@@ -30,6 +31,7 @@ export function Dashboard() {
     const t = (c.type || '').toString().toLowerCase()
     return t === filter
   })
+
   return (
     <>
       <div>
@@ -37,17 +39,14 @@ export function Dashboard() {
       <Sidebar />
       {/* -------------- */}
 
-
-      {/* ---maincintent--- */}
+      {/* ---maincontent--- */}
       <div className='ml-72 p-4 min-h-screen bg-gray-100 border-2'>
-      <CreateContentModal open = {modalOpen} onClose = {() => {
+      <CreateContentModal open={modalOpen} onClose={() => {
           setmodalOpen(false)
       }}/> 
       <div className='flex gap-4 justify-end p-4'>
 
-
-        
-      <Button onClick = {() => {setmodalOpen(true)}} startIcon = {<PlusIcon size="lg" />} size = "md" variant="Primary" text="Add Content" />
+      <Button onClick={() => {setmodalOpen(true)}} startIcon={<PlusIcon size="lg" />} size="md" variant="Primary" text="Add Content" />
 
       <Button
         onClick={async () => {
@@ -60,7 +59,7 @@ export function Dashboard() {
             const response = await axios.post(
               `https://second-brain-app-qoob.onrender.com/api/v1/brain/share`,
               { share: true },
-              { headers: { Authorization: token } }
+              { headers: { Authorization: `Bearer ${token}` } }
             );
             const url = `${window.location.origin}/share/${response.data.hash}`
             try {
@@ -79,10 +78,6 @@ export function Dashboard() {
         text="Share Brain"
       />
       <ShareModal open={shareModalOpen} onClose={() => setShareModalOpen(false)} initialUrl={shareUrl} />
-
-
-
-
 
       </div>
       <div className='flex gap-4 flex-wrap'>

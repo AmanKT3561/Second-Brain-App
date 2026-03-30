@@ -10,35 +10,58 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(cors());
+
 app.post("/api/v1/signup", async (req, res) => {
   const { username, password } = req.body;
   try {
+    if (!username || !password) {
+      return res.status(400).json({ message: "Username and password are required" });
+    }
+    if (typeof username !== "string" || typeof password !== "string") {
+      return res.status(400).json({ message: "Invalid input" });
+    }
+    if (username.length < 3) {
+      return res.status(400).json({ message: "Username must be at least 3 characters" });
+    }
+    if (password.length < 6) {
+      return res.status(400).json({ message: "Password must be at least 6 characters" });
+    }
+
+    const existing = await UserModel.findOne({ username });
+    if (existing) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
     await UserModel.create({ username, password });
     res.json({ message: "User created successfully" });
   } catch (err) {
     console.error("Sign up error:", err);
-    res.status(400).json({
-      message: "User already exists",
-    });
+    res.status(500).json({ message: "Failed to create user" });
   }
 });
 
 app.post("/api/v1/signin", async (req, res) => {
   const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({ message: "Username and password are required" });
+  }
+
   try {
-    const user = await UserModel.findOne({ username, password });
-    if (!user) {
-      return res.status(400).json({ message: "User does not exist" });
+    // Find by username only, then compare password separately
+    const user = await UserModel.findOne({ username });
+
+    if (!user || user.password !== password) {
+      return res.status(401).json({ message: "Invalid username or password" });
     }
 
-    // Sign with user id so protected routes can use it
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string);
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, {
+      expiresIn: "7d",
+    });
     res.json({ token });
   } catch (err) {
     console.error("Sign in error:", err);
-    res.status(500).json({
-      message: "Incorrect username or password",
-    });
+    res.status(500).json({ message: "Failed to sign in" });
   }
 });
 
@@ -64,10 +87,7 @@ app.post("/api/v1/content", userMiddleware, async (req, res) => {
 
 app.get("/api/v1/content", userMiddleware, async (req, res) => {
   const userId = (req as any).user;
-  const content = await ContentModel.find({ userId }).populate(
-    "userId",
-    "username"
-  );
+  const content = await ContentModel.find({ userId }).populate("userId", "username");
   res.json(content);
 });
 
@@ -92,57 +112,47 @@ app.post("/api/v1/brain/share", userMiddleware, async (req, res) => {
   if (share) {
     const existingLink = await LinkModel.findOne({ userId });
     if (existingLink) {
-      res.json({
-        hash: existingLink.hash,
-      });
+      res.json({ hash: existingLink.hash });
       return;
     }
     const hash = random(10);
-    await LinkModel.create({
-      userId,
-      hash,
-    });
+    await LinkModel.create({ userId, hash });
     res.json({ hash });
-  } 
-  else {
-    await LinkModel.deleteOne({
-      userId,
-    });
+  } else {
+    await LinkModel.deleteOne({ userId });
+    // Bug fix: was missing a response — client would hang forever
+    res.json({ message: "Share link removed" });
   }
-
 });
 
-app.get(
-  "/api/v1/brain/shareLink/:shareLink",
-  userMiddleware,
-  async (req, res) => {
-    const hash = req.params.shareLink as string;
-    if (!hash) {
-      res.status(400).json({ message: "Share link is required" });
-      return;
-    }
+// Bug fix: shareLink is public — removed userMiddleware so unauthenticated users can view shared brains
+app.get("/api/v1/brain/shareLink/:shareLink", async (req, res) => {
+  const hash = req.params.shareLink as string;
+  if (!hash) {
+    res.status(400).json({ message: "Share link is required" });
+    return;
+  }
+
+  try {
     const link = await LinkModel.findOne({ hash });
     if (!link) {
       res.status(404).json({ message: "Share link not found" });
       return;
     }
     const user = await UserModel.findById(link.userId);
-    const content = await ContentModel.find({ userId: link.userId });
     if (!user) {
       res.status(404).json({ message: "User not found" });
       return;
     }
-    if (!content) {
-      res.status(404).json({ message: "Content not found" });
-      return;
-    }
-    res.json({
-      username: user.username,
-      content: content,
-    });
+    const content = await ContentModel.find({ userId: link.userId });
+    res.json({ username: user.username, content });
+  } catch (err) {
+    console.error("Share link error:", err);
+    res.status(500).json({ message: "Failed to fetch shared content" });
   }
-);
+});
 
-app.listen(3000, () => {
-  console.log("Server is running on port 3000");
+const PORT = process.env.PORT ?? 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });

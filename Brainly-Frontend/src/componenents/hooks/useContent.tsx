@@ -10,12 +10,11 @@ export function useContent() {
             const token = localStorage.getItem("token");
             if (!token) {
                 console.warn("No auth token found in localStorage - user may need to sign in");
-                // leave contents as empty array until user signs in
                 return;
             }
             try {
                 const res = await axios.get(`https://second-brain-app-qoob.onrender.com/api/v1/content`, {
-                    headers: { Authorization: token },
+                    headers: { Authorization: `Bearer ${token}` },
                 });
                 if (mounted) setContent(res.data);
             } catch (err) {
@@ -25,7 +24,6 @@ export function useContent() {
 
         fetchContent();
 
-        // re-fetch when content is added or deleted
         const handler = () => fetchContent();
         window.addEventListener('content:added', handler);
         window.addEventListener('content:deleted', handler);
