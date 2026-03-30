@@ -26,13 +26,12 @@ export function Signin() {
 
       const token = response.data.token;
       localStorage.setItem("token", token);
-      // Keep axios default header in sync for the current session
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       alert("Signin Successful");
       navigate("/dashboard");
-    } catch (err: any) {
+    } catch (err) {
       console.error("Signin error", err);
-      const msg = err?.response?.data?.message || "Signin failed";
+      const msg = (err instanceof Error && 'response' in err ? (err as { response: { data: { message: string } } }).response?.data?.message : undefined) || "Signin failed";
       alert(msg);
     } finally {
       setLoading(false);

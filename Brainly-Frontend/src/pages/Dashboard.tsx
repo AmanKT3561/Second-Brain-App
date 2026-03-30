@@ -2,7 +2,7 @@ import '../index.css'
 import {Button} from "../componenents/Buttons"
 import { PlusIcon } from '../componenents/ui/icons/PlusIcon'
 import { ShareIcon } from '../componenents/ui/icons/Shareicon'
-import { Card } from '../componenents/card'
+import { Card } from '../componenents/card.tsx'
 import { CreateContentModal } from '../componenents/ui/CreateContentModal'
 import ShareModal from '../componenents/ui/ShareModal'
 import { useState, useEffect } from 'react'
@@ -18,15 +18,15 @@ export function Dashboard() {
   const [filter, setFilter] = useState<'all'|'youtube'|'twitter'>('all')
 
   useEffect(() => {
-    const handler = (e: any) => {
+    const handler = (e: CustomEvent) => {
       const f = e?.detail || 'all'
       setFilter(f)
     }
-    window.addEventListener('filter:content', handler)
-    return () => window.removeEventListener('filter:content', handler)
+    window.addEventListener('filter:content', handler as EventListener)
+    return () => window.removeEventListener('filter:content', handler as EventListener)
   }, [])
 
-  const filtered = contents.filter((c: any) => {
+  const filtered = contents.filter((c: { type?: string; _id?: string; link?: string; title?: string }) => {
     if (!filter || filter === 'all') return true
     const t = (c.type || '').toString().toLowerCase()
     return t === filter
@@ -64,12 +64,15 @@ export function Dashboard() {
             const url = `${window.location.origin}/share/${response.data.hash}`
             try {
               await navigator.clipboard.writeText(url);
-            } catch {}
+            } catch {
+              // ignore clipboard write errors
+            }
             setShareUrl(url)
             setShareModalOpen(true)
-          } catch (err: any) {
+          } catch (err) {
             console.error("Share failed", err);
-            alert(err?.response?.data?.message || "Failed to create share link");
+            const errorMessage = (err instanceof Error && 'response' in err ? (err as Error & { response?: { data?: { message?: string } } }).response?.data?.message : undefined) || "Failed to create share link";
+            alert(errorMessage);
           }
         }}
         startIcon={<ShareIcon size="lg" />}
@@ -81,8 +84,8 @@ export function Dashboard() {
 
       </div>
       <div className='flex gap-4 flex-wrap'>
-       {filtered.map((c: any) => (
-         <Card key={c._id} id={c._id} type={c.type} link={c.link} tittle={c.title} />
+       {filtered.map((c: { type?: string; _id?: string; link?: string; title?: string }) => (
+         <Card key={c._id} id={c._id || ''} type={c.type as 'youtube' | 'twitter'} link={c.link || ''} title={c.title || ''} />
        ))}
       </div>
       {/* --------------- */}

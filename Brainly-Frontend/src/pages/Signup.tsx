@@ -24,16 +24,19 @@ export function Signup() {
 
       alert("Signup Successful");
       navigate("/signin");
-    } catch (err: any) {
+    } catch (err) {
       console.error("Signup error:", err);
-      alert(err?.response?.data?.message || "Signup failed");
+      if (axios.isAxiosError(err)) {
+        alert(err?.response?.data?.message || "Signup failed");
+      } else {
+        alert("Signup failed");
+      }
     }
   }
 
   return (
     <div className="h-screen w-screen bg-gray-200 flex justify-center items-center">
       <div className="bg-white rounded-2xl border min-w-72 p-8 shadow-md">
-        
         <Input
           value={username}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
